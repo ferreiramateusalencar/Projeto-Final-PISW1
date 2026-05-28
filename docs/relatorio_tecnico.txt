@@ -1,0 +1,19 @@
+ReservaFácil Hotel
+
+Introdução
+O ReservaFácil Hotel é um sistema web simples para gerenciamento de reservas de quartos. A aplicação permite cadastrar uma reserva informando os dados do hóspede, o quarto desejado, a quantidade de pessoas e o período da hospedagem. O sistema também permite consultar reservas cadastradas e cancelar reservas ativas.
+
+Arquitetura
+A aplicação foi desenvolvida em PHP com conexão ao banco de dados MySQL por meio da biblioteca PDO. O projeto foi organizado em pastas simples: config, public, assets, sql, logs e docs. Os arquivos de configuração ficam separados do código das telas, enquanto o script de criação do banco está na pasta sql. A conexão com o banco é centralizada no arquivo config/database.php, facilitando a manutenção.
+
+Segurança
+A aplicação evita SQL Injection utilizando prepared statements em todas as consultas que recebem ou manipulam dados. As credenciais de acesso ao banco não ficam fixas no código, pois são carregadas a partir do arquivo .env. Além disso, os erros técnicos são registrados em arquivo de log e não são exibidos diretamente ao usuário, evitando exposição de informações sensíveis.
+
+Transações
+A principal operação transacional ocorre no cadastro da reserva. O sistema inicia uma transação, verifica se o quarto existe, valida a capacidade, consulta se já existe reserva ativa para o mesmo período, cadastra ou atualiza o hóspede e, em seguida, registra a reserva. Se todas as etapas forem concluídas corretamente, é executado o commit. Caso ocorra alguma falha, o rollback é executado para desfazer a operação.
+
+Performance
+O banco possui chaves primárias, chaves estrangeiras e constraints para manter a integridade dos dados. Foi criado explicitamente o índice idx_reservas_quarto_datas na tabela reservas, usando os campos quarto_id, data_entrada e data_saida. Esse índice melhora a consulta de disponibilidade, pois o sistema precisa verificar rapidamente se já existe reserva para determinado quarto em um intervalo de datas.
+
+Conclusão
+O principal desafio do projeto foi organizar a lógica da reserva de forma segura, evitando conflitos de datas e garantindo que nenhuma reserva fosse gravada parcialmente. O uso de PDO, prepared statements, transações e tratamento de erros deixou o sistema mais seguro, organizado e coerente com uma situação real de desenvolvimento backend.
